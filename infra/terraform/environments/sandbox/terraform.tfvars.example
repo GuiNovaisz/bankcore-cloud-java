@@ -1,0 +1,9 @@
+# Copy to ignored terraform.tfvars ONLY during a separately authorized deployment.
+region = "us-east-1"
+operator_cidrs = ["203.0.113.10/32"] # Documentation address: replace.
+certificate_arn = "REPLACE_WITH_VALIDATED_ACM_CERTIFICATE_ARN"
+desired_count = 0
+multi_az = false
+deletion_protection = true
+image_digests = {} # Supply six immutable ECR digests; validation rejects placeholders.
+

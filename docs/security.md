@@ -24,3 +24,5 @@ Checkov configuration and inline skips are reviewed sandbox choices, not evidenc
 
 No real PII fixtures or CPF. .env, state, plans, generated credentials and operational artifacts are ignored. Terraform random_password values live in state; use encrypted access-controlled remote S3 state with locking before real deployment. Never publish state or plans as general CI artifacts. Gitleaks scans Git history. Dependency review checks PR changes for high/critical vulnerable dependencies. These do not prove absence of unknown vulnerabilities or production compliance.
 
+
+Secret-scan false-positive review: one historical synthetic k6 duplicateKey UUID was flagged by generic-api-key. Its exact commit/path/rule/line fingerprint is recorded in .gitleaksignore; no rule or directory is broadly exempted. Current published load summaries remove setup fixture identifiers while preserving every metric. This is not a credential exception.

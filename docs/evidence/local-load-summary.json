@@ -138,11 +138,6 @@
       "p(95)": 0
     }
   },
-  "setup_data": {
-    "destination": "d966114c-7e4c-4b1c-a22b-862a8b49e940",
-    "duplicateKey": "37887147-5ef1-4f0b-b1c7-b70e4dcfefa8",
-    "source": "f76f9d72-af5f-40c6-975f-65708e89fc06"
-  },
   "root_group": {
     "checks": {
       "transfer accepted": {

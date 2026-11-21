@@ -1,0 +1,3 @@
+# Reviewed false positive: k6's synthetic UUID idempotency fixture, not an authentication credential.
+# Only this exact historical occurrence is ignored; no file/path/rule is broadly disabled.
+5685852cc42d20ddb89e917c7048eeea0da1f0f4:docs/evidence/local-load-summary.json:generic-api-key:143

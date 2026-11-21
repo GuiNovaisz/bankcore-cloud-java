@@ -199,6 +199,7 @@ services:
     mem_limit: 192m
   k6:
     image: grafana/k6:2.4.0
+    user: "${K6_UID:-10001}:${K6_GID:-10001}"
     profiles: [load]
     environment:
       BASE_URL: http://edge:8080

@@ -1,0 +1,70 @@
+spring:
+  application:
+    name: ledger-service
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+    hikari:
+      maximum-pool-size: 6
+      connection-timeout: 2000
+      data-source-properties:
+        socketTimeout: 10
+        connectTimeout: 3
+  flyway:
+    user: ${MIGRATION_USER}
+    password: ${MIGRATION_PASSWORD}
+  lifecycle:
+    timeout-per-shutdown-phase: 25s
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      timeout: 200ms
+      connect-timeout: 200ms
+  threads:
+    virtual:
+      enabled: true
+server:
+  port: 8080
+  shutdown: graceful
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,prometheus
+  endpoint:
+    health:
+      probes:
+        enabled: true
+      group:
+        readiness:
+          include: readinessState,db
+  health:
+    redis:
+      enabled: false
+  tracing:
+    sampling:
+      probability: 1.0
+  otlp:
+    tracing:
+      endpoint: ${OTEL_EXPORTER_OTLP_TRACES_ENDPOINT:http://localhost:4318/v1/traces}
+  metrics:
+    distribution:
+      percentiles-histogram:
+        http.server.requests: true
+    tags:
+      service: ledger-service
+logging:
+  structured:
+    format:
+      console: logstash
+bankcore:
+  operator-password: ${OPERATOR_PASSWORD}
+  service-password: ${SERVICE_PASSWORD}
+  account-url: ${ACCOUNT_URL:http://account-service:8080}
+  ledger-url: ${LEDGER_URL:http://ledger-service:8080}
+  sqs-endpoint: ${SQS_ENDPOINT:}
+  queue-url: ${QUEUE_URL:}
+  region: ${AWS_REGION:us-east-1}
+
+

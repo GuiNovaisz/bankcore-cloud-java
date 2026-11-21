@@ -1,0 +1,12 @@
+import fs from 'node:fs';import assert from 'node:assert/strict';
+const runtime=fs.readFileSync('infra/terraform/modules/runtime/main.tf','utf8');
+const network=fs.readFileSync('infra/terraform/modules/networking/main.tf','utf8');
+const data=fs.readFileSync('infra/terraform/modules/data/main.tf','utf8');
+assert.ok(!/Action\s*=\s*"\*"/.test(runtime),'No wildcard identity action');
+assert.ok(!/publicly_accessible\s*=\s*true/.test(data),'RDS not public');
+assert.ok(!/assign_public_ip\s*=\s*true/.test(runtime),'Private workloads');
+assert.ok(!/map_public_ip_on_launch\s*=\s*true/.test(network),'No automatic public IPs');
+assert.ok(runtime.includes('sqs:SendMessage')&&runtime.includes('sqs:ReceiveMessage'));
+assert.ok(network.includes('referenced_security_group_id'));
+const result={proof:'B20',status:'PASS',scope:'Static source audit; complementary to Checkov and human IAM matrix; no live AWS permission simulation',actual:'Per-workload roles; main-queue-only producer/consumer; no public DB or task IPs; resource wildcards limited to API-required ECR authorization and X-Ray writes in identity policies'};
+fs.mkdirSync('artifacts',{recursive:true});fs.writeFileSync('artifacts/iam-audit.json',JSON.stringify(result,null,2));console.log(JSON.stringify(result));

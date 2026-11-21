@@ -1,0 +1,208 @@
+name: bankcore-cloud
+services:
+  postgres:
+    image: postgres:18.7-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?run configure.ps1}
+      ACCOUNT_DB_PASSWORD: ${ACCOUNT_DB_PASSWORD:?required}
+      ACCOUNT_MIGRATION_PASSWORD: ${ACCOUNT_MIGRATION_PASSWORD:?required}
+      LEDGER_DB_PASSWORD: ${LEDGER_DB_PASSWORD:?required}
+      LEDGER_MIGRATION_PASSWORD: ${LEDGER_MIGRATION_PASSWORD:?required}
+      TRANSFER_DB_PASSWORD: ${TRANSFER_DB_PASSWORD:?required}
+      TRANSFER_MIGRATION_PASSWORD: ${TRANSFER_MIGRATION_PASSWORD:?required}
+      PROJECTION_DB_PASSWORD: ${PROJECTION_DB_PASSWORD:?required}
+      PROJECTION_MIGRATION_PASSWORD: ${PROJECTION_MIGRATION_PASSWORD:?required}
+    volumes:
+      - pgdata:/var/lib/postgresql
+      - ./local/postgres/init.sql:/docker-entrypoint-initdb.d/01-init.sql:ro
+    healthcheck:
+      test: [CMD-SHELL, "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    mem_limit: 384m
+  redis:
+    image: redis:7.4.2-alpine
+    command: [redis-server, --maxmemory, 64mb, --maxmemory-policy, allkeys-lru, --save, "", --appendonly, "no"]
+    mem_limit: 96m
+    healthcheck:
+      test: [CMD, redis-cli, ping]
+      interval: 5s
+      retries: 10
+  localstack:
+    image: localstack/localstack:4.10.0
+    environment:
+      SERVICES: sqs
+      AWS_DEFAULT_REGION: us-east-1
+    ports: ["127.0.0.1:4566:4566"]
+    volumes:
+      - ./local/localstack/ready.sh:/etc/localstack/init/ready.d/queues.sh:ro
+    healthcheck:
+      test: [CMD-SHELL, "awslocal sqs get-queue-url --queue-name bankcore-events > /dev/null"]
+      interval: 5s
+      retries: 30
+    mem_limit: 512m
+  account-service:
+    build:
+      context: .
+      dockerfile: account-service/Dockerfile
+    image: bankcore/account-service:${IMAGE_TAG:-local}
+    environment:
+      SPRING_PROFILES_ACTIVE: local
+      DB_URL: jdbc:postgresql://postgres:5432/account
+      DB_USER: account_app
+      DB_PASSWORD: ${ACCOUNT_DB_PASSWORD:?required}
+      MIGRATION_USER: account_migrator
+      MIGRATION_PASSWORD: ${ACCOUNT_MIGRATION_PASSWORD:?required}
+      OPERATOR_PASSWORD: ${OPERATOR_PASSWORD:?required}
+      SERVICE_PASSWORD: ${SERVICE_PASSWORD:?required}
+      REDIS_HOST: redis
+      SQS_ENDPOINT: http://localstack:4566
+      QUEUE_URL: http://localstack:4566/000000000000/bankcore-events
+      AWS_REGION: us-east-1
+      AWS_ACCESS_KEY_ID: localstack
+      AWS_SECRET_ACCESS_KEY: localstack
+      OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: http://otel-collector:4318/v1/traces
+    depends_on:
+      postgres: {condition: service_healthy}
+      localstack: {condition: service_healthy}
+    stop_grace_period: 35s
+    mem_limit: 384m
+    cpus: 1.0
+  ledger-service:
+    build:
+      context: .
+      dockerfile: ledger-service/Dockerfile
+    image: bankcore/ledger-service:${IMAGE_TAG:-local}
+    environment:
+      SPRING_PROFILES_ACTIVE: local
+      DB_URL: jdbc:postgresql://postgres:5432/ledger
+      DB_USER: ledger_app
+      DB_PASSWORD: ${LEDGER_DB_PASSWORD:?required}
+      MIGRATION_USER: ledger_migrator
+      MIGRATION_PASSWORD: ${LEDGER_MIGRATION_PASSWORD:?required}
+      OPERATOR_PASSWORD: ${OPERATOR_PASSWORD:?required}
+      SERVICE_PASSWORD: ${SERVICE_PASSWORD:?required}
+      REDIS_HOST: redis
+      SQS_ENDPOINT: http://localstack:4566
+      QUEUE_URL: http://localstack:4566/000000000000/bankcore-events
+      AWS_REGION: us-east-1
+      AWS_ACCESS_KEY_ID: localstack
+      AWS_SECRET_ACCESS_KEY: localstack
+      OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: http://otel-collector:4318/v1/traces
+    depends_on:
+      postgres: {condition: service_healthy}
+      localstack: {condition: service_healthy}
+    stop_grace_period: 35s
+    mem_limit: 384m
+    cpus: 1.0
+  transfer-service:
+    build:
+      context: .
+      dockerfile: transfer-service/Dockerfile
+    image: bankcore/transfer-service:${IMAGE_TAG:-local}
+    environment:
+      SPRING_PROFILES_ACTIVE: local
+      DB_URL: jdbc:postgresql://postgres:5432/transfer
+      DB_USER: transfer_app
+      DB_PASSWORD: ${TRANSFER_DB_PASSWORD:?required}
+      MIGRATION_USER: transfer_migrator
+      MIGRATION_PASSWORD: ${TRANSFER_MIGRATION_PASSWORD:?required}
+      OPERATOR_PASSWORD: ${OPERATOR_PASSWORD:?required}
+      SERVICE_PASSWORD: ${SERVICE_PASSWORD:?required}
+      REDIS_HOST: redis
+      SQS_ENDPOINT: http://localstack:4566
+      QUEUE_URL: http://localstack:4566/000000000000/bankcore-events
+      AWS_REGION: us-east-1
+      AWS_ACCESS_KEY_ID: localstack
+      AWS_SECRET_ACCESS_KEY: localstack
+      OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: http://otel-collector:4318/v1/traces
+    depends_on:
+      postgres: {condition: service_healthy}
+      localstack: {condition: service_healthy}
+    stop_grace_period: 35s
+    mem_limit: 384m
+    cpus: 1.0
+  projection-worker:
+    build:
+      context: .
+      dockerfile: projection-worker/Dockerfile
+    image: bankcore/projection-worker:${IMAGE_TAG:-local}
+    environment:
+      SPRING_PROFILES_ACTIVE: local
+      DB_URL: jdbc:postgresql://postgres:5432/projection
+      DB_USER: projection_app
+      DB_PASSWORD: ${PROJECTION_DB_PASSWORD:?required}
+      MIGRATION_USER: projection_migrator
+      MIGRATION_PASSWORD: ${PROJECTION_MIGRATION_PASSWORD:?required}
+      OPERATOR_PASSWORD: ${OPERATOR_PASSWORD:?required}
+      SERVICE_PASSWORD: ${SERVICE_PASSWORD:?required}
+      REDIS_HOST: redis
+      SQS_ENDPOINT: http://localstack:4566
+      QUEUE_URL: http://localstack:4566/000000000000/bankcore-events
+      AWS_REGION: us-east-1
+      AWS_ACCESS_KEY_ID: localstack
+      AWS_SECRET_ACCESS_KEY: localstack
+      OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: http://otel-collector:4318/v1/traces
+    depends_on:
+      postgres: {condition: service_healthy}
+      localstack: {condition: service_healthy}
+    stop_grace_period: 35s
+    mem_limit: 384m
+    cpus: 1.0
+  edge:
+    image: nginx:1.28.0-alpine
+    ports: ["127.0.0.1:28180:8080"]
+    volumes: ["./local/nginx.conf:/etc/nginx/conf.d/default.conf:ro"]
+    depends_on:
+      account-service: {condition: service_healthy}
+      ledger-service: {condition: service_healthy}
+      transfer-service: {condition: service_healthy}
+      projection-worker: {condition: service_healthy}
+    mem_limit: 48m
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:0.123.0
+    command: [--config=/etc/otelcol/config.yaml]
+    volumes: ["./local/observability/collector.yml:/etc/otelcol/config.yaml:ro"]
+    mem_limit: 192m
+  tempo:
+    image: grafana/tempo:2.7.2
+    command: [-config.file=/etc/tempo.yml]
+    volumes: ["./local/observability/tempo.yml:/etc/tempo.yml:ro"]
+    ports: ["127.0.0.1:13200:3200"]
+    mem_limit: 256m
+  prometheus:
+    image: prom/prometheus:v3.2.1
+    command: [--config.file=/etc/prometheus/prometheus.yml, --storage.tsdb.retention.time=2d]
+    volumes:
+      - ./local/observability/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./local/observability/alerts.yml:/etc/prometheus/alerts.yml:ro
+      - ./artifacts/prometheus-auth:/etc/prometheus/auth:ro
+    ports: ["127.0.0.1:19090:9090"]
+    mem_limit: 192m
+  grafana:
+    image: grafana/grafana:11.6.0
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD:?required}
+      GF_USERS_ALLOW_SIGN_UP: "false"
+    ports: ["127.0.0.1:13000:3000"]
+    volumes:
+      - ./local/observability/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./local/observability/grafana/dashboards:/var/lib/grafana/dashboards:ro
+    mem_limit: 192m
+  k6:
+    image: grafana/k6:2.4.0
+    profiles: [load]
+    environment:
+      BASE_URL: http://edge:8080
+      BASIC_AUTH: ${LOAD_BASIC_AUTH:-}
+    volumes:
+      - ./tests/load:/scripts:ro
+      - ./artifacts:/results
+    command: [run, --summary-export=/results/load-summary.json, /scripts/baseline.js]
+    mem_limit: 192m
+    cpus: 0.5
+volumes:
+  pgdata:
+

@@ -67,6 +67,7 @@ services:
     depends_on:
       postgres: {condition: service_healthy}
       localstack: {condition: service_healthy}
+    read_only: true
     stop_grace_period: 35s
     mem_limit: 384m
     cpus: 1.0
@@ -94,6 +95,7 @@ services:
     depends_on:
       postgres: {condition: service_healthy}
       localstack: {condition: service_healthy}
+    read_only: true
     stop_grace_period: 35s
     mem_limit: 384m
     cpus: 1.0
@@ -121,6 +123,7 @@ services:
     depends_on:
       postgres: {condition: service_healthy}
       localstack: {condition: service_healthy}
+    read_only: true
     stop_grace_period: 35s
     mem_limit: 384m
     cpus: 1.0
@@ -148,6 +151,7 @@ services:
     depends_on:
       postgres: {condition: service_healthy}
       localstack: {condition: service_healthy}
+    read_only: true
     stop_grace_period: 35s
     mem_limit: 384m
     cpus: 1.0

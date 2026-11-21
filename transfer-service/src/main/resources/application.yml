@@ -56,6 +56,9 @@ management:
       service: transfer-service
 logging:
   structured:
+    json:
+      add:
+        service: transfer-service
     format:
       console: logstash
 bankcore:

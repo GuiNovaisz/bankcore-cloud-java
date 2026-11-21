@@ -109,7 +109,7 @@ resource "aws_ecs_task_definition" "service" {
   execution_role_arn       = aws_iam_role.execution[each.key].arn
   task_role_arn            = aws_iam_role.task[each.key].arn
   container_definitions = jsonencode([{
-    name = each.key, image = var.image_digests[each.key], essential = true, user = "1000", readonlyRootFilesystem = true,
+    name = each.key, image = var.image_digests[each.key], essential = true, user = "10001", readonlyRootFilesystem = true,
     portMappings = [{
       containerPort = 8080
     }], stopTimeout = 35,

@@ -56,6 +56,9 @@ management:
       service: account-service
 logging:
   structured:
+    json:
+      add:
+        service: account-service
     format:
       console: logstash
 bankcore:

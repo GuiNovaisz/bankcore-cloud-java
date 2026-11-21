@@ -14,7 +14,7 @@ Researched 2026-11-21 using official docs, Maven Central metadata/artifact HEAD 
 | Redis local | 7.4.2-alpine | Explicit known image; cloud Redis OSS7.1 managed target |
 | LocalStack | 4.10.0 | SQS-only local emulator without real AWS resources |
 | Nginx | 1.28.0-alpine | Dynamic Docker DNS upstream resolution |
-| Temurin runtime image | 21.0.9_10-jre-alpine | Nonroot Java21 image tag; no latest |
+| Temurin runtime image | 21.0.13.1+2, digest sha256:5d7689f47d670aca766b9503a70bccc2d73b4eb9221ae8f714ae958313c4ce70 | Nonroot Java21 image tag; no latest |
 | Maven build image | 3.9.11-eclipse-temurin-21 | Java21 multistage builds |
 | Collector | 0.123.0 contrib | OTLP/Tempo locally; AWS X-Ray exporter configuration prepared |
 | Prometheus | v3.2.1 | Metrics + rules |

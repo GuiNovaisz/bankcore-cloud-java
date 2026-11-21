@@ -4,6 +4,12 @@ REAL_AWS_DEPLOYMENT = NOT_EXECUTED
 
 Region planned: us-east-1. No real billable resources created. Official pricing pages were consulted (references.md); no unverified static dollar quote is offered. A complete priced AWS calculator estimate with current account discounts/taxes is a prerequisite for apply. Zero tasks does not mean zero cost.
 
+## Dated reference rates
+
+The public [AWS price-list catalog](pricing-snapshot.json) was retrieved on 2026-11-21, with effective dates and SKUs retained. Standard Linux/x86 Fargate: USD0.04048/vCPU-hour and USD0.004445/GB-hour; RDS PostgreSQL db.t4g.micro Single-AZ: USD0.016/hour; Redis cache.t4g.micro standard node usage: USD0.016/hour. Unused-capacity reservation and extended-support SKUs were excluded. [ALB pricing](https://aws.amazon.com/elasticloadbalancing/pricing/) gives USD0.0225/hour plus USD0.008/LCU-hour in its US-East-1 example. [PrivateLink](https://aws.amazon.com/privatelink/pricing/) gives USD0.01 per endpoint ENI-hour plus data processing. [VPC](https://aws.amazon.com/vpc/pricing/) lists USD0.005/public-IPv4-hour.
+
+For five minimum tasks, one RDS, one cache, one ALB, twelve endpoint ENIs and two ALB public IPs, the **partial fixed infrastructure subtotal** is USD0.2362125/hour, USD5.6691/day or USD172.435125 per 730-hour planning month. Tasks at zero reduce it to USD0.1845/hour or USD134.685/month. These calculated subtotals exclude storage, LCU, endpoint GB, requests, image storage, secrets, KMS, logs/traces, traffic, tax, discounts and backups; they are not a full bill quote or Free Tier promise. Production Multi-AZ and extra replicas increase cost and require a separate calculator export. This high endpoint share is precisely why the foundation stays local unless a short cloud demonstration is authorized.
+
 | Model | Resources | Cost drivers |
 |---|---|---|
 | Local | Existing Windows/Docker, 4 app containers + local data/telemetry | Local CPU, RAM, disk and electricity; no AWS bill |

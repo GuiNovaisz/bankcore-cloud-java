@@ -56,6 +56,9 @@ management:
       service: projection-worker
 logging:
   structured:
+    json:
+      add:
+        service: projection-worker
     format:
       console: logstash
 bankcore:

@@ -56,6 +56,9 @@ management:
       service: ledger-service
 logging:
   structured:
+    json:
+      add:
+        service: ledger-service
     format:
       console: logstash
 bankcore:

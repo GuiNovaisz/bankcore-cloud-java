@@ -1,0 +1,20 @@
+[
+  {
+    "name": "actualRemoteClientHasBoundedTimeout",
+    "className": "io.bankcore.platform.ResilienceTest",
+    "seconds": 3.12,
+    "status": "PASS"
+  },
+  {
+    "name": "productionBreakerOpensFailsFastAndRecovers",
+    "className": "io.bankcore.platform.ResilienceTest",
+    "seconds": 5.403,
+    "status": "PASS"
+  },
+  {
+    "name": "exactScaleAndCurrency",
+    "className": "io.bankcore.ledger.MoneyTest",
+    "seconds": 0.273,
+    "status": "PASS"
+  }
+]

@@ -172,10 +172,12 @@ services:
     mem_limit: 192m
   tempo:
     image: grafana/tempo:2.7.2
+    environment:
+      GOMEMLIMIT: 256MiB
     command: [-config.file=/etc/tempo.yml]
     volumes: ["./local/observability/tempo.yml:/etc/tempo.yml:ro"]
     ports: ["127.0.0.1:13200:3200"]
-    mem_limit: 256m
+    mem_limit: 384m
   prometheus:
     image: prom/prometheus:v3.2.1
     command: [--config.file=/etc/prometheus/prometheus.yml, --storage.tsdb.retention.time=2d]

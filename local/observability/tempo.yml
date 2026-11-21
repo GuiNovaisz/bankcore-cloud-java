@@ -6,6 +6,11 @@ distributor:
       protocols:
         grpc:
           endpoint: 0.0.0.0:4317
+ingester:
+  trace_idle_period: 5s
+  flush_check_period: 5s
+  max_block_bytes: 1048576
+  max_block_duration: 1m
 storage:
   trace:
     backend: local

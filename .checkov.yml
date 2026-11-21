@@ -1,0 +1,9 @@
+framework:
+  - terraform
+skip-check:
+  # Reviewed sandbox exceptions, with scope and trade-offs in docs/security.md.
+  - CKV_AWS_332 # Fargate 1.4.0 pinned deliberately; no mutable LATEST deployments.
+  - CKV_AWS_378 # ALB terminates TLS; private SG-scoped service HTTP is an explicit trust boundary.
+  - CKV2_AWS_50 # Single-AZ sandbox cache is disposable. multi_az=true enables failover.
+  - CKV2_AWS_30 # Full SQL query logging may reveal financial parameters. Structured app audit used instead.
+  - CKV2_AWS_5 # Cross-module SG attachment graph false positives; review runtime network_configuration and data SG refs.

@@ -1,0 +1,15 @@
+# Architecture decisions
+
+- [ADR-001: Four services and monorepo](001-boundaries.md)
+- [ADR-002: Double-entry immutable ledger](002-ledger.md)
+- [ADR-003: Exact BRL decimal representation](003-money.md)
+- [ADR-004: SQS standard delivery](004-sqs.md)
+- [ADR-005: Transactional outbox and inbox](005-outbox.md)
+- [ADR-006: Disposable cache-aside metadata](006-redis.md)
+- [ADR-007: Durable retry ownership](007-resilience.md)
+- [ADR-008: OpenTelemetry and bounded metrics](008-observability.md)
+- [ADR-009: ECS Fargate compute](009-ecs.md)
+- [ADR-010: Owned databases on one managed PostgreSQL instance](010-rds.md)
+- [ADR-011: Four shallow Terraform modules](011-terraform.md)
+- [ADR-012: OIDC and workload roles](012-aws-auth.md)
+- [ADR-013: Operator-scoped foundation trust](013-security.md)

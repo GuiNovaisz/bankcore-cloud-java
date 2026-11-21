@@ -1,0 +1,45 @@
+groups:
+  - name: bankcore
+    rules:
+      - alert: DeadLetterQueueNotEmpty
+        expr: 'dlq_count > 0'
+        for: 1m
+        labels:
+          severity: page
+        annotations:
+          summary: "DLQ contains unprocessed messages; consult docs/operations.md"
+      - alert: HighErrorRate
+        expr: 'sum(rate(http_server_requests_seconds_count{status=~"5.."}[5m])) / clamp_min(sum(rate(http_server_requests_seconds_count[5m])),1) > 0.05'
+        for: 2m
+        labels:
+          severity: page
+        annotations:
+          summary: "HighErrorRate; consult docs/operations.md"
+      - alert: ElevatedLatency
+        expr: 'histogram_quantile(0.95,sum by(le)(rate(http_server_requests_seconds_bucket[5m]))) > 1'
+        for: 2m
+        labels:
+          severity: ticket
+        annotations:
+          summary: "ElevatedLatency; consult docs/operations.md"
+      - alert: OutboxBacklog
+        expr: 'outbox_pending > 100'
+        for: 2m
+        labels:
+          severity: ticket
+        annotations:
+          summary: "OutboxBacklog; consult docs/operations.md"
+      - alert: ConsumerFailures
+        expr: 'sum(rate(consumer_failures_total[5m])) > 0.1'
+        for: 2m
+        labels:
+          severity: ticket
+        annotations:
+          summary: "ConsumerFailures; consult docs/operations.md"
+      - alert: DependencyUnavailable
+        expr: 'up{job="bankcore"} == 0'
+        for: 2m
+        labels:
+          severity: page
+        annotations:
+          summary: "DependencyUnavailable; consult docs/operations.md"

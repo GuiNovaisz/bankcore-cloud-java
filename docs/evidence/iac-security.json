@@ -1,0 +1,148 @@
+{
+  "summary": {
+    "passed": 304,
+    "failed": 0,
+    "skipped": 34,
+    "parsing_errors": 0,
+    "resource_count": 136,
+    "checkov_version": "3.4.6"
+  },
+  "skipped": [
+    {
+      "check": "CKV_AWS_149",
+      "resource": "aws_secretsmanager_secret.credential"
+    },
+    {
+      "check": "CKV_AWS_136",
+      "resource": "aws_ecr_repository.service[\"account-service\"]"
+    },
+    {
+      "check": "CKV_AWS_136",
+      "resource": "aws_ecr_repository.service[\"collector\"]"
+    },
+    {
+      "check": "CKV_AWS_136",
+      "resource": "aws_ecr_repository.service[\"projection-worker\"]"
+    },
+    {
+      "check": "CKV_AWS_136",
+      "resource": "aws_ecr_repository.service[\"transfer-service\"]"
+    },
+    {
+      "check": "CKV_AWS_136",
+      "resource": "aws_ecr_repository.service[\"ledger-service\"]"
+    },
+    {
+      "check": "CKV_AWS_136",
+      "resource": "aws_ecr_repository.service[\"bootstrap\"]"
+    },
+    {
+      "check": "CKV_AWS_129",
+      "resource": "module.data.aws_db_instance.this"
+    },
+    {
+      "check": "CKV_AWS_118",
+      "resource": "module.data.aws_db_instance.this"
+    },
+    {
+      "check": "CKV_AWS_157",
+      "resource": "module.data.aws_db_instance.this"
+    },
+    {
+      "check": "CKV_AWS_31",
+      "resource": "module.data.aws_elasticache_replication_group.this"
+    },
+    {
+      "check": "CKV_AWS_158",
+      "resource": "module.network.aws_cloudwatch_log_group.flow"
+    },
+    {
+      "check": "CKV_AWS_338",
+      "resource": "module.network.aws_cloudwatch_log_group.flow"
+    },
+    {
+      "check": "CKV_AWS_158",
+      "resource": "module.runtime.aws_cloudwatch_log_group.service[\"account-service\"]"
+    },
+    {
+      "check": "CKV_AWS_338",
+      "resource": "module.runtime.aws_cloudwatch_log_group.service[\"account-service\"]"
+    },
+    {
+      "check": "CKV_AWS_97",
+      "resource": "module.runtime.aws_ecs_task_definition.service[\"account-service\"]"
+    },
+    {
+      "check": "CKV_AWS_91",
+      "resource": "module.runtime.aws_lb.this"
+    },
+    {
+      "check": "CKV_AWS_158",
+      "resource": "module.runtime.aws_cloudwatch_log_group.service[\"collector\"]"
+    },
+    {
+      "check": "CKV_AWS_338",
+      "resource": "module.runtime.aws_cloudwatch_log_group.service[\"collector\"]"
+    },
+    {
+      "check": "CKV_AWS_158",
+      "resource": "module.runtime.aws_cloudwatch_log_group.service[\"projection-worker\"]"
+    },
+    {
+      "check": "CKV_AWS_338",
+      "resource": "module.runtime.aws_cloudwatch_log_group.service[\"projection-worker\"]"
+    },
+    {
+      "check": "CKV_AWS_158",
+      "resource": "module.runtime.aws_cloudwatch_log_group.service[\"transfer-service\"]"
+    },
+    {
+      "check": "CKV_AWS_338",
+      "resource": "module.runtime.aws_cloudwatch_log_group.service[\"transfer-service\"]"
+    },
+    {
+      "check": "CKV_AWS_158",
+      "resource": "module.runtime.aws_cloudwatch_log_group.service[\"ledger-service\"]"
+    },
+    {
+      "check": "CKV_AWS_338",
+      "resource": "module.runtime.aws_cloudwatch_log_group.service[\"ledger-service\"]"
+    },
+    {
+      "check": "CKV_AWS_158",
+      "resource": "module.runtime.aws_cloudwatch_log_group.service[\"bootstrap\"]"
+    },
+    {
+      "check": "CKV_AWS_338",
+      "resource": "module.runtime.aws_cloudwatch_log_group.service[\"bootstrap\"]"
+    },
+    {
+      "check": "CKV_AWS_97",
+      "resource": "module.runtime.aws_ecs_task_definition.service[\"ledger-service\"]"
+    },
+    {
+      "check": "CKV_AWS_97",
+      "resource": "module.runtime.aws_ecs_task_definition.service[\"projection-worker\"]"
+    },
+    {
+      "check": "CKV_AWS_97",
+      "resource": "module.runtime.aws_ecs_task_definition.service[\"transfer-service\"]"
+    },
+    {
+      "check": "CKV2_AWS_11",
+      "resource": "module.network.aws_vpc.this"
+    },
+    {
+      "check": "CKV2_AWS_28",
+      "resource": "module.runtime.aws_lb.this"
+    },
+    {
+      "check": "CKV2_AWS_57",
+      "resource": "aws_secretsmanager_secret.credential"
+    },
+    {
+      "check": "CKV2_AWS_20",
+      "resource": "module.runtime.aws_lb.this"
+    }
+  ]
+}

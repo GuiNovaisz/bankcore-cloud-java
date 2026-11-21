@@ -1,0 +1,233 @@
+{
+  "queryTraceId": "7bc7d914638779f561a0345f952d176e",
+  "spans": [
+    {
+      "traceId": "e8fZFGOHefVhoDRflS0Xbg==",
+      "spanId": "oCg6AUdMcxc=",
+      "parentSpanId": "EjRWeJCrze8=",
+      "name": "http post /transfers"
+    },
+    {
+      "traceId": "e8fZFGOHefVhoDRflS0Xbg==",
+      "spanId": "q/JOF4UW4VM=",
+      "parentSpanId": "oCg6AUdMcxc=",
+      "name": "security filterchain before"
+    },
+    {
+      "traceId": "e8fZFGOHefVhoDRflS0Xbg==",
+      "spanId": "QM1USFDFfXU=",
+      "parentSpanId": "q/JOF4UW4VM=",
+      "name": "authenticate usernamepassword"
+    },
+    {
+      "traceId": "e8fZFGOHefVhoDRflS0Xbg==",
+      "spanId": "ImRAy5QT9cI=",
+      "parentSpanId": "q/JOF4UW4VM=",
+      "name": "authorize request"
+    },
+    {
+      "traceId": "e8fZFGOHefVhoDRflS0Xbg==",
+      "spanId": "e175MBxbgT8=",
+      "parentSpanId": "oCg6AUdMcxc=",
+      "name": "secured request"
+    },
+    {
+      "traceId": "e8fZFGOHefVhoDRflS0Xbg==",
+      "spanId": "lkysfSbO/7g=",
+      "parentSpanId": "oCg6AUdMcxc=",
+      "name": "security filterchain after"
+    },
+    {
+      "traceId": "e8fZFGOHefVhoDRflS0Xbg==",
+      "spanId": "7tPyVP7JxIw=",
+      "parentSpanId": "e175MBxbgT8=",
+      "name": "transfer.process"
+    },
+    {
+      "traceId": "e8fZFGOHefVhoDRflS0Xbg==",
+      "spanId": "HxAF4t2XLrM=",
+      "parentSpanId": "7tPyVP7JxIw=",
+      "name": "http get"
+    },
+    {
+      "traceId": "e8fZFGOHefVhoDRflS0Xbg==",
+      "spanId": "b7Fl4lwVOiY=",
+      "parentSpanId": "HxAF4t2XLrM=",
+      "name": "http get /internal/journals/{id}"
+    },
+    {
+      "traceId": "e8fZFGOHefVhoDRflS0Xbg==",
+      "spanId": "1Y1VO2egdC4=",
+      "parentSpanId": "b7Fl4lwVOiY=",
+      "name": "security filterchain before"
+    },
+    {
+      "traceId": "e8fZFGOHefVhoDRflS0Xbg==",
+      "spanId": "cPaKNs/G+y8=",
+      "parentSpanId": "1Y1VO2egdC4=",
+      "name": "authenticate usernamepassword"
+    },
+    {
+      "traceId": "e8fZFGOHefVhoDRflS0Xbg==",
+      "spanId": "RiWI+ChM8nc=",
+      "parentSpanId": "1Y1VO2egdC4=",
+      "name": "authorize request"
+    },
+    {
+      "traceId": "e8fZFGOHefVhoDRflS0Xbg==",
+      "spanId": "6e38ZuFgXYs=",
+      "parentSpanId": "b7Fl4lwVOiY=",
+      "name": "secured request"
+    },
+    {
+      "traceId": "e8fZFGOHefVhoDRflS0Xbg==",
+      "spanId": "Y54UMcqE1cw=",
+      "parentSpanId": "b7Fl4lwVOiY=",
+      "name": "security filterchain after"
+    },
+    {
+      "traceId": "e8fZFGOHefVhoDRflS0Xbg==",
+      "spanId": "A/ubJLCMUF4=",
+      "parentSpanId": "7tPyVP7JxIw=",
+      "name": "http get"
+    },
+    {
+      "traceId": "e8fZFGOHefVhoDRflS0Xbg==",
+      "spanId": "hsFPRS/Atzw=",
+      "parentSpanId": "A/ubJLCMUF4=",
+      "name": "http get /internal/accounts/{id}"
+    },
+    {
+      "traceId": "e8fZFGOHefVhoDRflS0Xbg==",
+      "spanId": "NP2UKXQgvZE=",
+      "parentSpanId": "hsFPRS/Atzw=",
+      "name": "security filterchain before"
+    },
+    {
+      "traceId": "e8fZFGOHefVhoDRflS0Xbg==",
+      "spanId": "0jNqA8gfRgc=",
+      "parentSpanId": "NP2UKXQgvZE=",
+      "name": "authenticate usernamepassword"
+    },
+    {
+      "traceId": "e8fZFGOHefVhoDRflS0Xbg==",
+      "spanId": "roF51bsQIT0=",
+      "parentSpanId": "NP2UKXQgvZE=",
+      "name": "authorize request"
+    },
+    {
+      "traceId": "e8fZFGOHefVhoDRflS0Xbg==",
+      "spanId": "ILTee7/5LCg=",
+      "parentSpanId": "hsFPRS/Atzw=",
+      "name": "secured request"
+    },
+    {
+      "traceId": "e8fZFGOHefVhoDRflS0Xbg==",
+      "spanId": "zhgGItgEeAo=",
+      "parentSpanId": "hsFPRS/Atzw=",
+      "name": "security filterchain after"
+    },
+    {
+      "traceId": "e8fZFGOHefVhoDRflS0Xbg==",
+      "spanId": "aG9JMC0TlEk=",
+      "parentSpanId": "7tPyVP7JxIw=",
+      "name": "http get"
+    },
+    {
+      "traceId": "e8fZFGOHefVhoDRflS0Xbg==",
+      "spanId": "OPsp5jWuQZw=",
+      "parentSpanId": "aG9JMC0TlEk=",
+      "name": "http get /internal/accounts/{id}"
+    },
+    {
+      "traceId": "e8fZFGOHefVhoDRflS0Xbg==",
+      "spanId": "Yh6A50Y9vB8=",
+      "parentSpanId": "OPsp5jWuQZw=",
+      "name": "security filterchain before"
+    },
+    {
+      "traceId": "e8fZFGOHefVhoDRflS0Xbg==",
+      "spanId": "KbrT0sBoqUA=",
+      "parentSpanId": "Yh6A50Y9vB8=",
+      "name": "authenticate usernamepassword"
+    },
+    {
+      "traceId": "e8fZFGOHefVhoDRflS0Xbg==",
+      "spanId": "/Y7HAAGt5FE=",
+      "parentSpanId": "Yh6A50Y9vB8=",
+      "name": "authorize request"
+    },
+    {
+      "traceId": "e8fZFGOHefVhoDRflS0Xbg==",
+      "spanId": "hvsLUF0Bu7c=",
+      "parentSpanId": "OPsp5jWuQZw=",
+      "name": "secured request"
+    },
+    {
+      "traceId": "e8fZFGOHefVhoDRflS0Xbg==",
+      "spanId": "YmFaZMfE3Mw=",
+      "parentSpanId": "OPsp5jWuQZw=",
+      "name": "security filterchain after"
+    },
+    {
+      "traceId": "e8fZFGOHefVhoDRflS0Xbg==",
+      "spanId": "j36aWdX8+/A=",
+      "parentSpanId": "7tPyVP7JxIw=",
+      "name": "http post"
+    },
+    {
+      "traceId": "e8fZFGOHefVhoDRflS0Xbg==",
+      "spanId": "zkYhplMwTXY=",
+      "parentSpanId": "j36aWdX8+/A=",
+      "name": "http post /internal/journals"
+    },
+    {
+      "traceId": "e8fZFGOHefVhoDRflS0Xbg==",
+      "spanId": "qDR3Eygpbhs=",
+      "parentSpanId": "zkYhplMwTXY=",
+      "name": "security filterchain before"
+    },
+    {
+      "traceId": "e8fZFGOHefVhoDRflS0Xbg==",
+      "spanId": "4qKGCPp8rPo=",
+      "parentSpanId": "qDR3Eygpbhs=",
+      "name": "authenticate usernamepassword"
+    },
+    {
+      "traceId": "e8fZFGOHefVhoDRflS0Xbg==",
+      "spanId": "Fjo2XpJGjOk=",
+      "parentSpanId": "qDR3Eygpbhs=",
+      "name": "authorize request"
+    },
+    {
+      "traceId": "e8fZFGOHefVhoDRflS0Xbg==",
+      "spanId": "GUInZzNhgs4=",
+      "parentSpanId": "zkYhplMwTXY=",
+      "name": "secured request"
+    },
+    {
+      "traceId": "e8fZFGOHefVhoDRflS0Xbg==",
+      "spanId": "8/uu2mrKceg=",
+      "parentSpanId": "GUInZzNhgs4=",
+      "name": "ledger.db.work"
+    },
+    {
+      "traceId": "e8fZFGOHefVhoDRflS0Xbg==",
+      "spanId": "2ge222W5J84=",
+      "parentSpanId": "zkYhplMwTXY=",
+      "name": "security filterchain after"
+    },
+    {
+      "traceId": "e8fZFGOHefVhoDRflS0Xbg==",
+      "spanId": "fe2qQOsHMD4=",
+      "parentSpanId": "8/uu2mrKceg=",
+      "name": "outbox.publish"
+    },
+    {
+      "traceId": "e8fZFGOHefVhoDRflS0Xbg==",
+      "spanId": "wpz2Xkd1QFk=",
+      "parentSpanId": "fe2qQOsHMD4=",
+      "name": "projection.process"
+    }
+  ]
+}

@@ -36,6 +36,7 @@ jobs:
       - run: node scripts/configure.mjs
       - run: docker compose --parallel 1 up -d --build --wait --wait-timeout 240
       - run: node tests/e2e.mjs
+      - run: node tests/observability.mjs
       - run: node scripts/load.mjs
       - name: Collect safe diagnostics
         if: always()

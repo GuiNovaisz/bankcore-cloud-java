@@ -12,7 +12,7 @@ Runtime DB connections have separate per-service logins and no DDL ownership. Le
 | Account task | No AWS API grant | SQS publish/receive/delete; DB master secrets |
 | Transfer task | No AWS API grant | SQS receive; ECR write; IAM |
 | Ledger task | Main queue sqs:SendMessage | Queue purge/delete, DLQ consume, IAM |
-| Projection task | Main queue receive/delete/change visibility/get attributes | Publish, purge/delete, DLQ redrive |
+| Projection task | Main queue receive/delete/change visibility; main/DLQ read-only attributes | Publish, purge/delete, DLQ receive/delete/redrive |
 | Collector task | xray:PutTraceSegments, PutTelemetryRecords | IAM, SQS, secrets |
 | Each execution role | Its ECR repository read; its log stream write; only its required startup secrets | Other repositories/secrets, ECR write, cloud mutation |
 | Bootstrap execution | DB master secret plus app/migrator password secrets | General account administration |

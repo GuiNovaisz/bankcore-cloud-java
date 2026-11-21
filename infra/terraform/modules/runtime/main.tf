@@ -87,7 +87,9 @@ resource "aws_iam_role_policy" "consumer" {
   role = aws_iam_role.task["projection-worker"].id
   policy = jsonencode({
     Version = "2012-10-17", Statement = [{
-      Effect = "Allow", Action = ["sqs:ReceiveMessage", "sqs:DeleteMessage", "sqs:ChangeMessageVisibility", "sqs:GetQueueAttributes"], Resource = var.queue_arn
+      Effect = "Allow", Action = ["sqs:ReceiveMessage", "sqs:DeleteMessage", "sqs:ChangeMessageVisibility"], Resource = var.queue_arn
+      }, {
+      Effect = "Allow", Action = ["sqs:GetQueueAttributes"], Resource = [var.queue_arn, replace(var.queue_arn, "-events", "-dlq")]
     }]
   })
 }

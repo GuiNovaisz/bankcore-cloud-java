@@ -97,14 +97,15 @@ try {
   await until(()=>sql('projection',`select count(*) from inbox where event_id='${t.id}'`)==='1');return 'Committed journal + pending outbox retained; eventual inbox count 1';
  });
  await proof('B8','Duplicate SQS deliveries have one projection effect',async()=>{
-  await until(()=>sql('projection',`select count(*) from inbox where event_id='${duplicateId}'`)==='1');
-  const body=sql('ledger',`select payload from outbox where id='${duplicateId}'`),before=sql('projection',`select balance from account_projection where account_id='${destination}'`);
+  const isolated=await account(),eventId=await fund(isolated,'7.00');
+  await until(()=>sql('projection',`select count(*) from inbox where event_id='${eventId}'`)==='1');
+  const body=sql('ledger',`select payload from outbox where id='${eventId}'`),before=sql('projection',`select balance from account_projection where account_id='${isolated}'`);
   const beforeProcessed=await request('/projection/actuator/prometheus',{status:200});const count=t=>Number(t.match(/^consumer_processing_total(?:\{[^\n]*\})? ([\d.]+)/m)?.[1]??0);const n=count(beforeProcessed.body);
   sqs('send-message','--queue-url',queue,'--message-body',body);sqs('send-message','--queue-url',queue,'--message-body',body);
   await until(async()=>count((await request('/projection/actuator/prometheus')).body)>=n+2);
-  assert.equal(sql('projection',`select count(*) from inbox where event_id='${duplicateId}'`),'1');
-  // Other legitimate pending transfers may settle; use per-event delta audit rather than a global timing assumption.
-  assert.equal(sql('projection',`select count(*) from inbox where event_id='${duplicateId}' and payload is not null`),'1');return 'Two additional receives/acks; inbox primary key keeps one event effect';
+  assert.equal(sql('projection',`select count(*) from inbox where event_id='${eventId}'`),'1');
+  assert.equal(sql('projection',`select balance from account_projection where account_id='${isolated}'`),before);
+  assert.equal(before,'7.00');return 'Two additional receives/acks; isolated projection unchanged at 7.00; inbox count 1';
  });
  await proof('B9','Poison event is redriven to DLQ after maxReceiveCount=3',async()=>{
   const poison='poison-'+randomUUID();sqs('send-message','--queue-url',queue,'--message-body',poison);

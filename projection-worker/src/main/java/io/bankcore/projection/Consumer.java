@@ -50,19 +50,31 @@ public class Consumer {
                   ? attrs.get("correlation_id").stringValue()
                   : null;
           traces.run(
-              parent, correlation, "projection.process", () -> projection.apply(message.body()));
-          sqs.deleteMessage(b -> b.queueUrl(queue).receiptHandle(message.receiptHandle()));
-          meters.counter("consumer.processing").increment();
-          log.atInfo()
-              .addKeyValue("action", "projection_process")
-              .addKeyValue("outcome", "committed")
-              .log("Projection committed before acknowledgement");
+              parent,
+              correlation,
+              "projection.process",
+              () -> {
+                var sample = io.micrometer.core.instrument.Timer.start(meters);
+                try {
+                  projection.apply(message.body());
+                  sqs.deleteMessage(b -> b.queueUrl(queue).receiptHandle(message.receiptHandle()));
+                  meters.counter("consumer.processing").increment();
+                  log.atInfo()
+                      .addKeyValue("action", "projection_process")
+                      .addKeyValue("outcome", "committed")
+                      .log("Projection committed and acknowledged");
+                } catch (RuntimeException e) {
+                  log.atWarn()
+                      .addKeyValue("action", "projection_process")
+                      .addKeyValue("outcome", "redelivery")
+                      .log("Message left unacknowledged");
+                  throw e;
+                } finally {
+                  sample.stop(meters.timer("consumer.latency"));
+                }
+              });
         } catch (RuntimeException e) {
           meters.counter("consumer.failures").increment();
-          log.atWarn()
-              .addKeyValue("action", "projection_process")
-              .addKeyValue("outcome", "redelivery")
-              .log("Message left unacknowledged");
         }
       }
     } catch (RuntimeException e) {

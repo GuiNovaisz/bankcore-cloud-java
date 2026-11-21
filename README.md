@@ -19,7 +19,7 @@ Requer Docker Desktop com Linux containers, PowerShell 7 e Node.js 22+. Reserve 
 ~~~powershell
 git clone https://github.com/GuiNovaisz/bankcore-cloud-java.git
 cd bankcore-cloud-java
-git switch feature/cloud-backend-foundation
+git switch dev
 ./scripts/dev-up.ps1
 ./scripts/verify.ps1
 ./scripts/smoke.ps1

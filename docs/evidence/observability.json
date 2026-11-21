@@ -1,0 +1,5 @@
+{
+  "proof": "OBSERVABILITY",
+  "status": "PASS",
+  "actual": "4 Prometheus targets up; 14 Grafana panels; DLQ alert loaded; queue/DLQ/consumer latency metrics; correlated JSON async log; actual DB-work/outbox trace spans"
+}

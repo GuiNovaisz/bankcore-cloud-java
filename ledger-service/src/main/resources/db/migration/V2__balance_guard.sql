@@ -1,0 +1,7 @@
+CREATE FUNCTION balance_guard() RETURNS trigger LANGUAGE plpgsql AS $$
+BEGIN
+ IF NEW.balance<>OLD.balance AND pg_trigger_depth()<=1 THEN RAISE EXCEPTION 'BALANCE_REQUIRES_POSTING' USING ERRCODE='23514'; END IF;
+ RETURN NEW;
+END $$;
+CREATE TRIGGER balance_guard BEFORE UPDATE ON ledger_account FOR EACH ROW EXECUTE FUNCTION balance_guard();
+

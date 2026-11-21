@@ -1,0 +1,266 @@
+[
+  {
+    "proof": "B1",
+    "environment": "Docker Compose; PostgreSQL 18.7; LocalStack SQS; Windows/Linux CI",
+    "command": "node tests/e2e.mjs",
+    "expected": "All journals have equal debits and credits",
+    "actual": "SQL audit: zero unbalanced or partial journals",
+    "status": "PASS",
+    "durationMs": 1263
+  },
+  {
+    "proof": "B2",
+    "environment": "Docker Compose; PostgreSQL 18.7; LocalStack SQS; Windows/Linux CI",
+    "command": "node tests/e2e.mjs",
+    "expected": "All movements conserve total money including explicit treasury funding",
+    "actual": "Sum balances including treasury = 0.00; balances match postings",
+    "status": "PASS",
+    "durationMs": 1175
+  },
+  {
+    "proof": "B3",
+    "environment": "Docker Compose; PostgreSQL 18.7; LocalStack SQS; Windows/Linux CI",
+    "command": "node tests/e2e.mjs",
+    "expected": "Concurrent duplicate requests produce one transfer and one journal",
+    "actual": "12 simultaneous HTTP requests; 1 transfer; 1 journal; payload conflict 409",
+    "status": "PASS",
+    "durationMs": 2693
+  },
+  {
+    "proof": "B4",
+    "environment": "Docker Compose; PostgreSQL 18.7; LocalStack SQS; Windows/Linux CI",
+    "command": "node tests/e2e.mjs",
+    "expected": "Same key with a changed request returns 409",
+    "actual": "409 IDEMPOTENCY_CONFLICT",
+    "status": "PASS",
+    "durationMs": 269
+  },
+  {
+    "proof": "B5",
+    "environment": "Docker Compose; PostgreSQL 18.7; LocalStack SQS; Windows/Linux CI",
+    "command": "node tests/e2e.mjs",
+    "expected": "100 BRL minus two concurrent 80 BRL requests accepts exactly one",
+    "actual": "Both DB sessions observed waiting on locks; statuses 200/422; source balance 20.00",
+    "status": "PASS",
+    "durationMs": 3347
+  },
+  {
+    "proof": "B6",
+    "environment": "Docker Compose; PostgreSQL 18.7; LocalStack SQS; Windows/Linux CI",
+    "command": "node tests/e2e.mjs",
+    "expected": "Runtime credentials cannot edit/delete journal or posting or directly change balance",
+    "actual": "UPDATE/DELETE/TRUNCATE/DDL denied to runtime; owner edits blocked; unbalanced journal commit rejected",
+    "status": "PASS",
+    "durationMs": 3632
+  },
+  {
+    "proof": "B7",
+    "environment": "Docker Compose; PostgreSQL 18.7; LocalStack SQS; Windows/Linux CI",
+    "command": "node tests/e2e.mjs",
+    "expected": "Outbox survives SQS failure after financial commit and publishes on recovery",
+    "actual": "Committed journal + pending outbox retained; eventual inbox count 1",
+    "status": "PASS",
+    "durationMs": 8496
+  },
+  {
+    "proof": "B8",
+    "environment": "Docker Compose; PostgreSQL 18.7; LocalStack SQS; Windows/Linux CI",
+    "command": "node tests/e2e.mjs",
+    "expected": "Duplicate SQS deliveries have one projection effect",
+    "actual": "Two additional receives/acks; isolated projection unchanged at 7.00; inbox count 1",
+    "status": "PASS",
+    "durationMs": 3304
+  },
+  {
+    "proof": "B9",
+    "environment": "Docker Compose; PostgreSQL 18.7; LocalStack SQS; Windows/Linux CI",
+    "command": "node tests/e2e.mjs",
+    "expected": "Poison event is redriven to DLQ after maxReceiveCount=3",
+    "actual": "Unparseable payload reached actual LocalStack DLQ with queue redrive policy 3",
+    "status": "PASS",
+    "durationMs": 34781
+  },
+  {
+    "proof": "B10",
+    "environment": "Docker Compose; PostgreSQL 18.7; LocalStack SQS; Windows/Linux CI",
+    "command": "node tests/e2e.mjs",
+    "expected": "Redis outage falls back to DB without changing financial correctness",
+    "actual": "Account read 200 with Redis down; transfer completed; SQL invariants unchanged",
+    "status": "PASS",
+    "durationMs": 3705
+  },
+  {
+    "proof": "B11",
+    "expected": "Bounded real RestClient timeout",
+    "actual": {
+      "name": "actualRemoteClientHasBoundedTimeout",
+      "className": "io.bankcore.platform.ResilienceTest",
+      "seconds": 3.12,
+      "status": "PASS"
+    },
+    "command": "mvn verify: Platform ResilienceTest",
+    "environment": "Java21 container + controlled real local HTTP server/latches",
+    "status": "PASS"
+  },
+  {
+    "proof": "B12",
+    "expected": "CLOSED → OPEN → HALF_OPEN → CLOSED",
+    "actual": {
+      "name": "productionBreakerOpensFailsFastAndRecovers",
+      "className": "io.bankcore.platform.ResilienceTest",
+      "seconds": 5.403,
+      "status": "PASS"
+    },
+    "command": "mvn verify: Platform ResilienceTest",
+    "environment": "Actual production Resilience4j configuration, Awaitility clock wait",
+    "status": "PASS"
+  },
+  {
+    "proof": "B13",
+    "environment": "Docker Compose; PostgreSQL 18.7; LocalStack SQS; Windows/Linux CI",
+    "command": "node tests/e2e.mjs",
+    "expected": "Transfer state survives process restart",
+    "actual": "Same transfer id across restart; one journal after recovery",
+    "status": "PASS",
+    "durationMs": 32082
+  },
+  {
+    "proof": "B14",
+    "environment": "Docker Compose; PostgreSQL 18.7; LocalStack SQS; Windows/Linux CI",
+    "command": "node tests/e2e.mjs",
+    "expected": "Injected projection divergence is detected and audited",
+    "actual": "RECONCILIATION_PROOF mismatchDetected=true; audit row retained",
+    "status": "PASS",
+    "durationMs": 1315
+  },
+  {
+    "proof": "B15",
+    "environment": "Docker Compose; PostgreSQL 18.7; LocalStack SQS; Windows/Linux CI",
+    "command": "node tests/e2e.mjs",
+    "expected": "Cross-service trace contains transfer, account and ledger spans",
+    "actual": {
+      "traceId": "7bc7d914638779f561a0345f952d176e",
+      "services": [
+        "transfer-service",
+        "account-service",
+        "ledger-service"
+      ]
+    },
+    "status": "PASS",
+    "durationMs": 5452
+  },
+  {
+    "proof": "B16",
+    "environment": "Docker Compose; PostgreSQL 18.7; LocalStack SQS; Windows/Linux CI",
+    "command": "node tests/e2e.mjs",
+    "expected": "Durable async context correlates projection processing to originating trace",
+    "actual": {
+      "traceId": "7bc7d914638779f561a0345f952d176e",
+      "asyncSpan": "projection.process"
+    },
+    "status": "PASS",
+    "durationMs": 13
+  },
+  {
+    "proof": "B17",
+    "environment": "Docker Compose; PostgreSQL 18.7; LocalStack SQS; Windows/Linux CI",
+    "command": "node tests/e2e.mjs",
+    "expected": "SIGTERM drains services without incomplete financial journals",
+    "actual": "Graceful stop/start; five durable requests eventually completed; no partial journals",
+    "status": "PASS",
+    "durationMs": 19152
+  },
+  {
+    "proof": "B18",
+    "environment": "Docker Compose; PostgreSQL 18.7; LocalStack SQS; Windows/Linux CI",
+    "command": "node tests/e2e.mjs",
+    "expected": "Full isolated local stack healthy",
+    "actual": "Four readiness endpoints 200; Docker healthchecks green",
+    "status": "PASS",
+    "durationMs": 631
+  },
+  {
+    "proof": "B19",
+    "expected": "Terraform fmt/validate and IaC policy gate pass",
+    "actual": {
+      "passed": 304,
+      "failed": 0,
+      "skipped": 34,
+      "parsing_errors": 0,
+      "resource_count": 136,
+      "checkov_version": "3.4.6"
+    },
+    "command": "terraform fmt -check -recursive; init -backend=false; validate; Checkov3.4.6",
+    "environment": "Local Terraform1.17.2, signed pinned providers; no credentials/apply",
+    "status": "PASS"
+  },
+  {
+    "proof": "B20",
+    "status": "PASS",
+    "scope": "Static source audit; complementary to Checkov and human IAM matrix; no live AWS permission simulation",
+    "actual": "Per-workload roles; main-queue-only producer/consumer; no public DB or task IPs; resource wildcards limited to API-required ECR authorization and X-Ray writes in identity policies"
+  },
+  {
+    "proof": "B21",
+    "expected": "No secrets in Git history",
+    "actual": "Gitleaks local history scan and GitHub job; see linked CI run",
+    "command": "gitleaks git --redact; Git history secret scan CI job",
+    "environment": "Git history, including all feature commits",
+    "status": "PASS"
+  },
+  {
+    "proof": "B22",
+    "expected": "Reproducible moderate baseline with p50/p95/p99, throughput and errors",
+    "actual": {
+      "httpRequests": {
+        "rate": 9.75137116941538,
+        "count": 474
+      },
+      "httpLatencyMs": {
+        "p(99)": 245.39158342999983,
+        "max": 292.703231,
+        "avg": 89.75886281434597,
+        "min": 54.185569,
+        "med": 65.74064,
+        "p(50)": 65.74064,
+        "p(95)": 196.20730989999998
+      },
+      "processingMs": {
+        "max": 2718,
+        "avg": 842.0181818181818,
+        "min": 111,
+        "med": 467,
+        "p(50)": 467,
+        "p(95)": 2547.2999999999997,
+        "p(99)": 2696.2599999999998
+      },
+      "httpErrorRate": 0,
+      "logicalErrorRate": 0,
+      "iterations": {
+        "count": 110,
+        "rate": 2.262976431720869
+      }
+    },
+    "command": "node scripts/load.mjs",
+    "environment": "Local Windows Docker, capped 4 peak active VUs, explicit fixtures",
+    "status": "PASS"
+  },
+  {
+    "proof": "B23",
+    "environment": "Docker Compose; PostgreSQL 18.7; LocalStack SQS; Windows/Linux CI",
+    "command": "node tests/e2e.mjs",
+    "expected": "Controlled ledger outage under moderate concurrent traffic preserves invariants",
+    "actual": "12 concurrent accepted requests during outage; eventual completion; zero partial/unbalanced journals",
+    "status": "PASS",
+    "durationMs": 27616
+  },
+  {
+    "proof": "B24",
+    "environment": "Docker Compose; PostgreSQL 18.7; LocalStack SQS; Windows/Linux CI",
+    "command": "node tests/e2e.mjs",
+    "expected": "Logical backup restores ledger and invariants to a separate database",
+    "actual": "pg_dump restored into isolated DB; journal count and all financial invariants verified; real AWS PITR unexecuted",
+    "status": "PASS",
+    "durationMs": 3508
+  }
+]

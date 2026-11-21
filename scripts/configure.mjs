@@ -1,0 +1,3 @@
+import fs from 'node:fs';import crypto from 'node:crypto';
+if(!fs.existsSync('.env'))fs.writeFileSync('.env',["POSTGRES_PASSWORD","ACCOUNT_DB_PASSWORD","LEDGER_DB_PASSWORD","TRANSFER_DB_PASSWORD","PROJECTION_DB_PASSWORD","ACCOUNT_MIGRATION_PASSWORD","LEDGER_MIGRATION_PASSWORD","TRANSFER_MIGRATION_PASSWORD","PROJECTION_MIGRATION_PASSWORD","OPERATOR_PASSWORD","SERVICE_PASSWORD","GRAFANA_PASSWORD"].map(k=>k+'='+crypto.randomBytes(32).toString('hex')).join('\n')+'\n');
+const env=Object.fromEntries(fs.readFileSync('.env','utf8').trim().split(/\r?\n/).map(l=>l.split('=')));fs.mkdirSync('artifacts',{recursive:true});fs.writeFileSync('artifacts/prometheus-auth',env.OPERATOR_PASSWORD);console.log('Local credentials configured; existing values preserved.');

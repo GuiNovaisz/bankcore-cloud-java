@@ -11,5 +11,9 @@ const rules=await get('http://127.0.0.1:19090/api/v1/rules');assert.ok(JSON.stri
 const metrics=await fetch('http://127.0.0.1:28180/projection/actuator/prometheus',{headers:{Authorization:operator}}).then(r=>r.text());assert.match(metrics,/dlq_count/);assert.match(metrics,/sqs_messages_visible/);assert.match(metrics,/consumer_latency_seconds/);
 const log=execFileSync('docker',['compose','logs','--no-color','projection-worker'],{encoding:'utf8'}).split('\n').map(l=>{try{return JSON.parse(l.slice(l.indexOf('{')));}catch{return null;}}).filter(Boolean);
 assert.ok(log.some(l=>l.action==='projection_process'&&l.outcome==='committed'&&l.traceId&&l.correlationId&&l.service==='projection-worker'));
-const trace=JSON.parse(fs.readFileSync('artifacts/trace.json','utf8'));assert.ok(JSON.stringify(trace).includes('ledger.db.work'));assert.ok(JSON.stringify(trace).includes('outbox.publish'));
+// Tempo may expose different batches at different times. Refresh the actual backend,
+// rather than asserting on the earlier B16 artifact snapshot.
+const traceId=fs.readFileSync('artifacts/trace-id.txt','utf8').trim();let trace;const traceDeadline=Date.now()+45000;
+do{trace=await get('http://127.0.0.1:13200/api/traces/'+traceId);const serialized=JSON.stringify(trace);if(serialized.includes('ledger.db.work')&&serialized.includes('outbox.publish'))break;await delay(500);}while(Date.now()<traceDeadline);
+assert.ok(JSON.stringify(trace).includes('ledger.db.work'));assert.ok(JSON.stringify(trace).includes('outbox.publish'));fs.writeFileSync('artifacts/trace.json',JSON.stringify(trace,null,2));
 const result={proof:'OBSERVABILITY',status:'PASS',actual:'4 Prometheus targets up; 14 Grafana panels; DLQ alert loaded; queue/DLQ/consumer latency metrics; correlated JSON async log; actual DB-work/outbox trace spans'};fs.writeFileSync('artifacts/observability-results.json',JSON.stringify(result,null,2));console.log(JSON.stringify(result));

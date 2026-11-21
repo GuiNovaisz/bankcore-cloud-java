@@ -4,13 +4,18 @@ Cloud-native banking backend built with Java and Spring Boot, designed around fi
 
 ## Português
 
+**Versão estável atual: [v0.1.0](https://github.com/GuiNovaisz/bankcore-cloud-java/releases/tag/v0.1.0).**
+
 BankCore demonstra como movimentar dinheiro sem duplicação, gasto concorrente indevido ou lançamentos parciais, mesmo quando serviços e mensageria falham. O milestone **v0.1.0 — Cloud-Native Banking Backend Foundation** tem quatro serviços, sem frontend. É um laboratório de engenharia e portfólio; não conecta dinheiro real nem declara conformidade bancária de produção.
 
 O Ledger é a única autoridade financeira: journals de dupla entrada, postings imutáveis e locks no PostgreSQL. Transfer possui seu próprio ciclo durável; uma resposta HTTP perdida é reconciliada pelo id do journal. A outbox e o consumidor idempotente aceitam entrega pelo menos uma vez. Redis otimiza somente leitura de metadados, com fallback ao banco.
 
 Microserviços permitem demonstrar ownership, falhas de rede, consistência eventual e deployments independentes. Account, Transfer, Ledger e Projection têm bancos, usuários, migrations e imagens distintos. Não há jar de domínio compartilhado. Terraform prepara ECS Fargate, ECR, RDS privado, ElastiCache privado, SQS/DLQ, Secrets Manager e CloudWatch/X-Ray.
 
-**AWS real não foi implantada. Nenhum apply é executado pela CI.** [Provas e resultados](docs/evidence.md), [arquitetura](docs/architecture.md), [limitações](docs/security.md) e [custos](docs/cost-model.md) são parte da entrega.
+**AWS real não foi implantada. Nenhum apply é executado pela CI.**
+
+`REAL_AWS_DEPLOYMENT = NOT_EXECUTED`
+ [Provas e resultados](docs/evidence.md), [arquitetura](docs/architecture.md), [limitações](docs/security.md) e [custos](docs/cost-model.md) são parte da entrega.
 
 ### Executar no Windows
 
@@ -19,7 +24,7 @@ Requer Docker Desktop com Linux containers, PowerShell 7 e Node.js 22+. Reserve 
 ~~~powershell
 git clone https://github.com/GuiNovaisz/bankcore-cloud-java.git
 cd bankcore-cloud-java
-git switch dev
+git switch --detach v0.1.0
 ./scripts/dev-up.ps1
 ./scripts/verify.ps1
 ./scripts/smoke.ps1
@@ -52,13 +57,18 @@ The complete English version follows below.
 
 ## English
 
+**Current stable release: [v0.1.0](https://github.com/GuiNovaisz/bankcore-cloud-java/releases/tag/v0.1.0).**
+
 BankCore demonstrates monetary movement without duplicate effects, concurrent overspending or half-committed transfers, including dependency outages and uncertain HTTP outcomes. **v0.1.0 — Cloud-Native Banking Backend Foundation** contains four services and no frontend. This is an engineering portfolio laboratory, with no real-money rails or production banking compliance claims.
 
 Ledger is the sole financial authority. It commits balanced immutable postings, authoritative balances and the outbox atomically. Transfer owns durable orchestration and reconciles uncertain outcomes using the journal identifier. SQS delivery is at least once, and the inbox prevents duplicate projection effects. Redis caches metadata only and is bypassed for financial authorization.
 
 The service boundaries demonstrate independent ownership/deployment, network failure and distributed consistency. Each service has its own database, role, Flyway migrations and container. The platform module shares stable transport infrastructure only. Terraform targets private ECS Fargate tasks, ECR, RDS PostgreSQL, ElastiCache, SQS/DLQ, Secrets Manager, CloudWatch and OpenTelemetry/X-Ray.
 
-**No real AWS deployment was performed. CI never applies Terraform.** Review [evidence](docs/evidence.md), [architecture](docs/architecture.md), [security limits](docs/security.md) and the [cost model](docs/cost-model.md).
+**No real AWS deployment was performed. CI never applies Terraform.**
+
+`REAL_AWS_DEPLOYMENT = NOT_EXECUTED`
+ Review [evidence](docs/evidence.md), [architecture](docs/architecture.md), [security limits](docs/security.md) and the [cost model](docs/cost-model.md).
 
 ### Run
 

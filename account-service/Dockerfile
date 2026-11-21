@@ -7,7 +7,7 @@ RUN addgroup -S -g 10001 bankcore && adduser -S -u 10001 -G bankcore bankcore &&
 RUN chown bankcore:bankcore /tmp
 VOLUME ["/tmp"]
 WORKDIR /app
-COPY --from=build /build/account-service/target/account-service-0.1.0-SNAPSHOT.jar app.jar
+COPY --from=build /build/account-service/target/account-service-0.1.0.jar app.jar
 USER bankcore
 EXPOSE 8080
 HEALTHCHECK --interval=10s --timeout=3s --start-period=60s CMD curl -fsS http://localhost:8080/actuator/health/readiness || exit 1

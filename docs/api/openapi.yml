@@ -1,0 +1,177 @@
+openapi: 3.1.0
+info:
+  title: BankCore Cloud operator API
+  version: 0.1.0
+  description: Operator-only banking foundation. No retail customer authentication or real-money integration. Decimal monetary amounts use strings. Prefixes below are local edge routes; AWS ALB uses unprefixed routes documented in aws-architecture.md.
+servers:
+  - url: http://localhost:28180
+security:
+  - basicAuth: []
+paths:
+  /account/accounts:
+    post:
+      operationId: provisionAccount
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [id, ownerReference]
+              properties:
+                id: {type: string, format: uuid}
+                ownerReference: {type: string, pattern: '^[a-zA-Z0-9-]{1,80}$'}
+      responses:
+        '200': {description: Account provisioned; same id and owner resumes an interrupted provisioning attempt}
+        '409': {description: Conflicting owner or closed lifecycle}
+    get:
+      operationId: listAccounts
+      parameters:
+        - {$ref: '#/components/parameters/offset'}
+        - {$ref: '#/components/parameters/limit'}
+      responses:
+        '200': {description: Bounded account metadata page}
+  /account/accounts/{id}:
+    parameters:
+      - {$ref: '#/components/parameters/id'}
+    get:
+      operationId: getAccount
+      responses:
+        '200': {description: Cached metadata, up to 15 seconds stale; never used to authorize money movement}
+        '404': {description: Missing account}
+  /account/accounts/{id}/status:
+    parameters:
+      - {$ref: '#/components/parameters/id'}
+    put:
+      operationId: changeAccountStatus
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [status]
+              properties:
+                status: {type: string, enum: [ACTIVE, BLOCKED, CLOSED]}
+      responses:
+        '200': {description: Ledger gate acknowledged before account metadata changes}
+        '409': {description: Closed accounts cannot reopen}
+        '503': {description: Ledger acknowledgement unavailable}
+  /transfer/transfers:
+    post:
+      operationId: requestTransfer
+      parameters:
+        - name: Idempotency-Key
+          in: header
+          required: true
+          schema: {type: string, pattern: '^[a-zA-Z0-9_-]{8,128}$'}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/TransferRequest'}
+      responses:
+        '202':
+          description: Durable logical transfer accepted or returned on identical replay; acceptance does not mean financial completion
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/Transfer'}
+        '400': {description: Invalid currency, precision, missing key or malformed request}
+        '409': {description: IDEMPOTENCY_CONFLICT}
+        '503': {description: Durable acceptance unavailable}
+    get:
+      operationId: listTransfers
+      parameters:
+        - {$ref: '#/components/parameters/offset'}
+        - {$ref: '#/components/parameters/limit'}
+      responses:
+        '200': {description: Bounded page}
+  /transfer/transfers/{id}:
+    parameters:
+      - {$ref: '#/components/parameters/id'}
+    get:
+      operationId: getTransfer
+      responses:
+        '200':
+          description: Durable transfer status
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/Transfer'}
+        '404': {description: Missing transfer}
+  /ledger/accounts/{id}/balance:
+    parameters:
+      - {$ref: '#/components/parameters/id'}
+    get:
+      operationId: authoritativeBalance
+      responses:
+        '200': {description: Authoritative BRL decimal string derived synchronously from immutable postings}
+        '404': {description: Missing ledger account}
+  /ledger/journals:
+    get:
+      operationId: listJournals
+      parameters:
+        - {$ref: '#/components/parameters/offset'}
+        - {$ref: '#/components/parameters/limit'}
+      responses:
+        '200': {description: Bounded immutable financial journal page}
+  /ledger/admin/funding:
+    post:
+      operationId: localOnlyFunding
+      description: Available only with local profile; treasury debit and customer credit. Not an AWS funding rail.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [id, destination, amount, currency]
+              properties:
+                id: {type: string, format: uuid}
+                destination: {type: string, format: uuid}
+                amount: {$ref: '#/components/schemas/Amount'}
+                currency: {const: BRL}
+      responses:
+        '200': {description: Auditable idempotent funding journal}
+  /projection/projections/{id}:
+    parameters:
+      - {$ref: '#/components/parameters/id'}
+    get:
+      operationId: getEventualProjection
+      responses:
+        '200': {description: Eventually consistent balance; never authorizes spending}
+components:
+  securitySchemes:
+    basicAuth: {type: http, scheme: basic, description: Random operator credentials. Localhost HTTP for development; HTTPS required at AWS edge. Service credentials have a separate internal role.}
+  parameters:
+    id: {name: id, in: path, required: true, schema: {type: string, format: uuid}}
+    offset: {name: offset, in: query, schema: {type: integer, minimum: 0, default: 0}}
+    limit: {name: limit, in: query, schema: {type: integer, minimum: 1, maximum: 100, default: 20}}
+  schemas:
+    Amount: {type: string, pattern: '^[0-9]+\.[0-9]{2}$', examples: ['80.00']}
+    TransferRequest:
+      type: object
+      required: [source, destination, amount, currency]
+      properties:
+        source: {type: string, format: uuid}
+        destination: {type: string, format: uuid}
+        amount: {$ref: '#/components/schemas/Amount'}
+        currency: {type: string, const: BRL}
+    Transfer:
+      type: object
+      required: [id, source, destination, amount, currency, status]
+      properties:
+        id: {type: string, format: uuid}
+        source: {type: string, format: uuid}
+        destination: {type: string, format: uuid}
+        amount: {$ref: '#/components/schemas/Amount'}
+        currency: {const: BRL}
+        status: {enum: [REQUESTED, PROCESSING, COMPLETED, FAILED]}
+    Problem:
+      type: object
+      required: [type, title, status, code, correlationId]
+      properties:
+        type: {type: string}
+        title: {type: string}
+        status: {type: integer}
+        code: {type: string}
+        correlationId: {type: string}
